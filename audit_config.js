@@ -1,44 +1,39 @@
 window.AUDIT_CONFIG = {
-  title: "Human Audit Template",
-  instruction: "Review each item independently, answer the questions, and save before moving on.",
-  storageKey: "human_audit_template_v1",
+  title: "General Human Evaluation Template",
+  instruction: "Answer each question and save the response before moving on.",
+  storageKey: "general_human_evaluation_template_v1",
   questions: [
     {
-      id: "verdict",
-      type: "single_choice",
-      label: "Is the proposed label supported by the evidence?",
+      id: "largest_planet",
+      type: "mcq",
+      label: "Which planet is the largest in the Solar System?",
       required: true,
       options: [
-        { value: "yes", label: "Yes" },
-        { value: "no", label: "No" },
-        { value: "unsure", label: "Unsure" }
+        { value: "earth", label: "Earth" },
+        { value: "mars", label: "Mars" },
+        { value: "jupiter", label: "Jupiter" },
+        { value: "venus", label: "Venus" }
       ]
     },
     {
-      id: "issue_types",
+      id: "programming_languages",
       type: "multiple_choice",
-      label: "Which parts of the item need revision?",
-      help: "Select every category that applies.",
+      label: "Which of the following are programming languages?",
+      help: "Select all that apply.",
+      required: true,
       options: [
-        { value: "source", label: "Source or evidence" },
-        { value: "claim", label: "Claim wording" },
-        { value: "label", label: "Gold label" },
-        { value: "other", label: "Other" }
+        { value: "python", label: "Python" },
+        { value: "java", label: "Java" },
+        { value: "html", label: "HTML" },
+        { value: "css", label: "CSS" }
       ]
     },
     {
-      id: "affected_part",
+      id: "reproducibility_benefit",
       type: "short_answer",
-      label: "Which record or field is affected?",
-      placeholder: "For example: evidence R4 or gold label",
-      maxLength: 160
-    },
-    {
-      id: "rationale",
-      type: "long_answer",
-      label: "Explain your judgment.",
-      placeholder: "Briefly explain the evidence for your decision.",
-      rows: 5,
+      label: "In one or two sentences, describe one benefit of reproducible research.",
+      placeholder: "Type a short response.",
+      maxLength: 240,
       required: true
     }
   ]

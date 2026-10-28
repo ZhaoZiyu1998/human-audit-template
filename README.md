@@ -1,5 +1,5 @@
 ---
-title: Human Audit Template
+title: General Human Evaluation Template
 emoji: ✅
 colorFrom: blue
 colorTo: indigo
@@ -8,11 +8,11 @@ pinned: false
 license: mit
 ---
 
-# Human Audit Template
+# General Human Evaluation Template
 
-A dependency-free static webpage for reviewing datasets, model outputs, or annotations. Reviewers
-work through a queue of items, save answers in browser `localStorage`, and export completed reviews
-as JSONL.
+A dependency-free static webpage for questionnaires and human-evaluation tasks. Participants work
+through a queue of items, save answers in browser `localStorage`, and export completed responses as
+JSONL.
 
 **Live Space:** <https://huggingface.co/spaces/ZiyuZhao98/human-audit-template>
 
@@ -22,8 +22,8 @@ Clone from Hugging Face:
 git clone https://huggingface.co/spaces/ZiyuZhao98/human-audit-template
 ```
 
-The repository contains no completed audit results. The included records and questions are small,
-fictional examples that demonstrate the data format and each supported question type.
+The repository contains no collected responses. Its default page demonstrates three general
+question types with ordinary, project-independent examples.
 
 ## Question examples
 
@@ -32,10 +32,9 @@ question type:
 
 | Type | Example question | Exported value |
 | --- | --- | --- |
-| `single_choice` | Is the proposed label supported by the evidence? | One option value |
-| `multiple_choice` | Which parts of the item need revision? | Array of option values |
-| `short_answer` | Which record or field is affected? | Single-line string |
-| `long_answer` | Explain your judgment. | Multi-line string |
+| `mcq` | Which planet is the largest in the Solar System? | One option value |
+| `multiple_choice` | Which of the following are programming languages? | Array of option values |
+| `short_answer` | Describe one benefit of reproducible research. | Short text string |
 
 ## Run locally
 
@@ -45,7 +44,7 @@ python -m http.server 8000
 
 Then open <http://localhost:8000>.
 
-## Create an audit
+## Create an evaluation
 
 1. Edit [`audit_config.js`](audit_config.js) to set the title, instructions, storage key, and
    questions.
@@ -53,47 +52,44 @@ Then open <http://localhost:8000>.
 3. Serve the directory as a static website.
 
 Each question needs a unique `id`, a supported `type`, and a `label`. Set `required: true` when the
-reviewer must answer it before saving. A short-answer question looks like this:
+participant must answer it before saving. A short-answer question looks like this:
 
 ```javascript
 {
-  id: "affected_part",
+  id: "reproducibility_benefit",
   type: "short_answer",
-  label: "Which record or field is affected?",
-  placeholder: "For example: evidence R4 or gold label",
-  maxLength: 160
+  label: "In one or two sentences, describe one benefit of reproducible research.",
+  placeholder: "Type a short response.",
+  maxLength: 240
 }
 ```
 
-Each audit item has an `id`, display text, optional fields, and optional metadata:
+Each evaluation item has an `id`, display text, optional fields, and optional metadata:
 
 ```javascript
 {
   id: "item-001",
-  title: "Example item",
-  description: "Review the evidence and proposed label.",
+  title: "Example question set",
+  description: "Answer the questions shown in the form.",
   fields: [
-    { label: "Claim", value: "The claim shown to the reviewer." },
-    { label: "Evidence", value: "The source evidence or model output." },
-    { label: "Proposed label", value: "SUPPORTS" }
+    { label: "Instructions", value: "Read the questions and save one response." }
   ],
-  metadata: { split: "test", source: "example" }
+  metadata: { category: "example" }
 }
 ```
 
 ## Export format
 
-The page exports one JSON object per reviewed item:
+The page exports one JSON object per completed item:
 
 ```json
 {
-  "item_id": "item-001",
-  "reviewer": "reviewer-a",
+  "item_id": "general-question-examples",
+  "participant": "participant-a",
   "answers": {
-    "verdict": "yes",
-    "issue_types": [],
-    "affected_part": "",
-    "rationale": "The visible record directly supports the claim."
+    "largest_planet": "jupiter",
+    "programming_languages": ["python", "java"],
+    "reproducibility_benefit": "Other researchers can verify and extend the result."
   },
   "saved_at": "2026-10-27T12:00:00.000Z"
 }
@@ -101,8 +97,8 @@ The page exports one JSON object per reviewed item:
 
 ## Files
 
-- `audit_config.js`: audit title, instructions, and question definitions
-- `audit_items.js`: items shown to reviewers
+- `audit_config.js`: page title, instructions, and question definitions
+- `audit_items.js`: items shown to participants
 - `audit_app.js`: rendering, validation, local storage, and JSONL export
 - `index.html` and `style.css`: static page structure and presentation
 

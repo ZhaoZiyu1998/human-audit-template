@@ -11,7 +11,7 @@ function load() {
   }
   const saved = localStorage.getItem(config.storageKey);
   state.reviews = saved ? JSON.parse(saved) : {};
-  $("reviewer").value = localStorage.getItem(`${config.storageKey}:reviewer`) || "";
+  $("reviewer").value = localStorage.getItem(`${config.storageKey}:participant`) || "";
 }
 
 function persist() {
@@ -53,7 +53,7 @@ function renderItem() {
   const root = $("item");
   root.replaceChildren();
   if (!item) {
-    root.append(make("div", "card", "No audit items are configured."));
+    root.append(make("div", "card", "No evaluation items are configured."));
     return;
   }
   const header = make("section", "card");
@@ -129,14 +129,12 @@ function renderQuestions() {
   const form = $("questions");
   form.replaceChildren();
   config.questions.forEach(question => {
-    if (question.type === "single_choice") {
+    if (question.type === "mcq") {
       form.append(renderChoiceQuestion(question, false));
     } else if (question.type === "multiple_choice") {
       form.append(renderChoiceQuestion(question, true));
     } else if (question.type === "short_answer") {
       form.append(renderTextQuestion(question, false));
-    } else if (question.type === "long_answer") {
-      form.append(renderTextQuestion(question, true));
     } else {
       throw new Error(`Unsupported question type: ${question.type}`);
     }
@@ -146,7 +144,7 @@ function renderQuestions() {
 
 function readAnswers() {
   return Object.fromEntries(config.questions.map(question => {
-    if (question.type === "single_choice") {
+    if (question.type === "mcq") {
       return [question.id, document.querySelector(`input[name="${question.id}"]:checked`)?.value || ""];
     }
     if (question.type === "multiple_choice") {
@@ -159,7 +157,7 @@ function readAnswers() {
 function fillAnswers(answers) {
   config.questions.forEach(question => {
     const value = answers[question.id];
-    if (question.type === "single_choice") {
+    if (question.type === "mcq") {
       const selected = [...document.querySelectorAll(`input[name="${question.id}"]`)]
         .find(input => input.value === value);
       if (selected) selected.checked = true;
@@ -185,9 +183,9 @@ function validate(answers) {
 
 function save() {
   const item = currentItem();
-  const reviewer = $("reviewer").value.trim();
+  const participant = $("reviewer").value.trim();
   const answers = readAnswers();
-  const error = !reviewer ? "Please enter a reviewer name or ID." : validate(answers);
+  const error = !participant ? "Please enter a participant name or ID." : validate(answers);
   if (error) {
     $("status").className = "status error";
     $("status").textContent = error;
@@ -195,7 +193,7 @@ function save() {
   }
   state.reviews[item.id] = {
     item_id: item.id,
-    reviewer,
+    participant,
     answers,
     saved_at: new Date().toISOString()
   };
@@ -218,7 +216,7 @@ function exportJsonl() {
   const url = URL.createObjectURL(new Blob([content], { type: "application/jsonl" }));
   const link = document.createElement("a");
   link.href = url;
-  link.download = `audit_responses_${new Date().toISOString().slice(0, 10)}.jsonl`;
+  link.download = `evaluation_responses_${new Date().toISOString().slice(0, 10)}.jsonl`;
   link.click();
   URL.revokeObjectURL(url);
 }
@@ -236,7 +234,7 @@ $("title").textContent = config.title;
 $("instruction").textContent = config.instruction;
 load();
 $("reviewer").onchange = () => {
-  localStorage.setItem(`${config.storageKey}:reviewer`, $("reviewer").value.trim());
+  localStorage.setItem(`${config.storageKey}:participant`, $("reviewer").value.trim());
 };
 $("save").onclick = save;
 $("next").onclick = next;
