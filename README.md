@@ -1,3 +1,13 @@
+---
+title: Human Audit Template
+emoji: ✅
+colorFrom: blue
+colorTo: indigo
+sdk: static
+pinned: false
+license: mit
+---
+
 # Human Audit Template
 
 A dependency-free static webpage for reviewing datasets, model outputs, or annotations. Reviewers
