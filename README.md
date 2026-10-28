@@ -14,6 +14,14 @@ A dependency-free static webpage for reviewing datasets, model outputs, or annot
 work through a queue of items, save answers in browser `localStorage`, and export completed reviews
 as JSONL.
 
+**Live Space:** <https://huggingface.co/spaces/ZiyuZhao98/human-audit-template>
+
+Clone from Hugging Face:
+
+```bash
+git clone https://huggingface.co/spaces/ZiyuZhao98/human-audit-template
+```
+
 The repository contains no completed audit results. The included records and questions are small,
 fictional examples that demonstrate the data format and each supported question type.
 
